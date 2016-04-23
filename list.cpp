@@ -1,19 +1,28 @@
+
+///////////////////////////
+/* Jacek Głąb 209904 */////
+/* PnN = 13:15       */////
+///////////////////////////
+/* Implementacja listy   */
+///////////////////////////
+
 #include <time.h>
 #include <stdlib.h>
 #include <iostream>
+#include <chrono>
 
 using namespace std;
 
-class ListElement{
+class Node{
 	
 	private:
 	
 		int key;
-		ListElement *next;
-		ListElement *prev;
+		Node *next;
+		Node *prev;
 	public:
 	
-		ListElement(int newKey, ListElement *newNext, ListElement *newPrev){
+		Node(int newKey, Node *newNext, Node *newPrev){
 			setKey(newKey);
 			setNext(newNext);
 			setPrev(newPrev);
@@ -27,19 +36,19 @@ class ListElement{
 			return key;
 		}
 		
-		void setNext(ListElement *newNext){
+		void setNext(Node *newNext){
 			next = newNext;
 		}
 		
-		ListElement *getNext(){
+		Node *getNext(){
 			return next;
 		}
 		
-		void setPrev(ListElement *newPrev){
+		void setPrev(Node *newPrev){
 			prev = newPrev;
 		}
 		
-		ListElement *getPrev(){
+		Node *getPrev(){
 			return prev;
 		}
 };
@@ -49,8 +58,8 @@ class List{
 	private:
 	
 		int size;
-		ListElement *head;
-		ListElement *tail;
+		Node *head;
+		Node *tail;
 	public:
 	
 		List(){
@@ -67,44 +76,44 @@ class List{
 			return size;
 		}
 	
-		void setHead(ListElement *newHead){
+		void setHead(Node *newHead){
 			head = newHead;
 		}
 		
-		ListElement *getHead(){
+		Node *getHead(){
 			return head;
 		}
 			
-		void setTail(ListElement *newTail){
+		void setTail(Node *newTail){
 			tail = newTail;
 		}
 		
-		ListElement *getTail(){
+		Node *getTail(){
 			return tail;
 		}
 
 		void pushForward(int newKey){
-			ListElement *newElement = new ListElement(newKey, getHead(), NULL);
-			ListElement *pointer = getHead();
-			setHead(newElement);
+			Node *newNode = new Node(newKey, getHead(), NULL);
+			Node *pointer = getHead();
+			setHead(newNode);
 			if(pointer != NULL)
-				pointer -> setPrev(newElement);
+				pointer -> setPrev(newNode);
 			else setTail(getHead());
 			setSize(getSize() + 1);
 		}	
 		
 		void pushBack(int newKey){
-			ListElement *newElement = new ListElement(newKey, NULL, getTail());
-			ListElement *pointer = getTail();
-			setTail(newElement);
+			Node *newNode = new Node(newKey, NULL, getTail());
+			Node *pointer = getTail();
+			setTail(newNode);
 			if(pointer != NULL)
-				pointer -> setNext(newElement);
-			else setHead(newElement);
+				pointer -> setNext(newNode);
+			else setHead(newNode);
 			setSize(getSize() + 1);
 		}
 		
 		void popForward(){
-			ListElement *pointer = getHead();
+			Node *pointer = getHead();
 			setHead(pointer -> getNext());
 			if(getHead() != NULL)
 				getHead() -> setPrev(NULL);
@@ -113,7 +122,7 @@ class List{
 		}
 		
 		void popBack(){
-			ListElement *pointer = getTail();
+			Node *pointer = getTail();
 			setTail(pointer -> getPrev());
 			if(getTail() != NULL)
 				getTail() -> setNext(NULL);
@@ -121,8 +130,32 @@ class List{
 			setSize(getSize() - 1);
 		}
 		
+		void insert(int index, int newKey){
+			Node *pointer;
+			if(index > 0 && index <= getSize()){
+				if(index < getSize() / 2){
+					pointer = getHead();
+					for(int i = 1; i < index; i++)
+						pointer = pointer -> getNext();
+				}
+				else{
+					pointer = getTail();
+					for(int i = getSize(); i > index; i--)
+						pointer = pointer -> getPrev();
+				}
+				Node *newNode = new Node(newKey, pointer, pointer -> getPrev());
+				if(pointer -> getPrev() != NULL)
+					pointer -> getPrev() -> setNext(newNode);
+				else setHead(newNode);
+				pointer -> setPrev(newNode);
+				setSize(getSize() + 1);
+			}
+			if(index == getSize() + 1)
+				pushBack(newKey);
+		}
+		
 		void printList(){
-			ListElement *pointer;
+			Node *pointer;
 			int index = 0;
 			pointer = getHead();
 			cout << "Lista: " << endl;
@@ -132,17 +165,35 @@ class List{
 				pointer = pointer -> getNext();
 			}
 		}
+		
+		Node *search(int newKey){
+			Node *pointer = getHead();
+			while (pointer != NULL){
+				if (pointer->getKey() == newKey)	
+					return pointer;
+				pointer = pointer->getNext();
+			}
+			return NULL ;
+		}
 };
 
 class Interface{
-
+	
 	private:
-		
+		int amountOfNodes[5] = {1000, 2000, 5000, 10000, 20000};
+		int amountOfTests = 100;
 	public:
+		Interface(){
+			
+		}
 		
+		void measurements(){
+			cout << "Pomiary" << endl;
+			
+		}
 };
 
 int main(){
-
+	Interface interface;
 	return 0;	
 }
