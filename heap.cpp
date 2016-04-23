@@ -1,4 +1,3 @@
-
 ///////////////////////////
 /* Jacek Głąb 209904 */////
 /* PnN = 13:15       */////
@@ -6,7 +5,6 @@
 /* Implementacja kopca   */
 ///////////////////////////
 
-#include <time.h>
 #include <stdlib.h>
 #include <iostream>
 
@@ -107,7 +105,7 @@ class Heap{
 			int newKey = getSize();
 			HeapElement *move = new HeapElement[getSize()];
 			for(int i = 0; i < getSize() - 1; i++){
-				*(move + i) = *(getElement() + 1);
+				*(move + i) = *(getElement() + i);
 			}
 			delete getElement();
 			setElement(move);
@@ -140,19 +138,75 @@ class Heap{
 				cout << "<" << i + 1 << "> " << (getElement() + i) -> getValue() << " ";
 			} 
 		}
+		
+		void popBegining(){
+			getElement() -> setValue((getElement() + getSize() - 1) -> getValue());
+			setSize(getSize() - 1);
+			HeapElement *tmp = getElement();
+			int help;
+			int index;
+			while(tmp -> getChildLeft() <= getSize()){
+				if((getElement() + tmp -> getChildLeft() - 1) -> getValue() < (getElement() + tmp -> getChildRight() - 1) -> getValue()){
+					index = tmp -> getChildRight();
+				}
+				else{
+					index = tmp -> getChildLeft();
+				}
+				if(tmp -> getValue() < (getElement() + index - 1) -> getValue()){
+					help = tmp -> getValue();
+					tmp -> setValue((getElement() + index - 1) -> getValue());
+					(getElement() + index - 1) -> setValue(help);
+				}
+				else break;
+				tmp = (getElement() + index - 1);
+			}
+		}
+		
+		void popEnd(){
+			int *clipboard = new int[getSize()];
+			int counter = 0;
+			while(getSize()){
+				clipboard[counter] = getElement() -> getValue();
+				getElement() -> setValue((getElement() + getSize() - 1) -> getValue());
+				setSize(getSize() - 1);
+				HeapElement *tmp = getElement();
+				int help;
+				int index;
+				while(tmp -> getChildLeft() <= getSize()){
+					if((getElement() + tmp -> getChildLeft() - 1) -> getValue() < (getElement() + tmp -> getChildRight() - 1) -> getValue()){
+						index = tmp -> getChildRight();
+					}
+					else index = tmp -> getChildLeft();
+					if(tmp -> getValue() < (getElement() + index - 1) -> getValue()){
+						help = tmp -> getValue();
+						tmp -> setValue((getElement() + index - 1) -> getValue());
+						(getElement() + index - 1) -> setValue(help);
+					}
+					else break;
+					tmp = (getElement() + index - 1);
+				}
+				counter++;
+			}
+			for(int i = 0; i < counter - 1; i++){
+				push(clipboard[i], 0);
+			}				
+		}
+		
 };
 
-class HeapInterface{
-private:
-
-public:
-
-	HeapInterface(){
-	
-	}
-};
 int main(){
 	Heap heap;
+	heap.push(1,1);
+	heap.push(2,1);
+	heap.push(3,2);
+	heap.pushBegining(19);
+	heap.pushBegining(22);
+	heap.pushBegining(1);
+	heap.pushEnd(2);
+	heap.popEnd();
+	heap.popEnd();
+	heap.popEnd();
+	heap.printHeap();
 	return 0;
 	
 }
