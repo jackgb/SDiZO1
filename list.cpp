@@ -20,6 +20,7 @@ class Node{
 		int key;
 		Node *next;
 		Node *prev;
+		
 	public:
 	
 		Node(int newKey, Node *newNext, Node *newPrev){
@@ -60,6 +61,7 @@ class List{
 		int size;
 		Node *head;
 		Node *tail;
+		
 	public:
 	
 		List(){
@@ -154,11 +156,33 @@ class List{
 				pushBack(newKey);
 		}
 		
+		void remove(int newKey)
+		{
+			Node *pointer = (Node*) search(newKey);
+			if (pointer != NULL){
+				if(pointer -> getNext() != NULL)
+					pointer -> getNext() -> setPrev(pointer -> getPrev());
+				else{
+					setTail(pointer -> getPrev());
+					if(pointer -> getPrev() != NULL)
+						pointer -> getPrev() -> setNext(NULL);
+				}
+				if(pointer -> getPrev() != NULL)
+					pointer -> getPrev() -> setNext(pointer -> getNext());
+				else{
+					setHead(pointer -> getNext());
+					if(pointer -> getNext() != NULL)
+						pointer -> getNext() -> setPrev(NULL);
+				}
+				delete pointer;
+				setSize(getSize() - 1);
+			}
+		}
+		
 		void printList(){
 			Node *pointer;
 			int index = 0;
 			pointer = getHead();
-			cout << "Lista: " << endl;
 			while(pointer != NULL){
 				index++;
 				cout << index << ". " << pointer ->getKey() << endl;
@@ -194,6 +218,6 @@ class Interface{
 };
 
 int main(){
-	Interface interface;
+
 	return 0;	
 }
