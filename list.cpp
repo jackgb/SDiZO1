@@ -1,17 +1,21 @@
-
-///////////////////////////
-/* Jacek Głąb 209904 */////
-/* PnN = 13:15       */////
-///////////////////////////
-/* Implementacja listy   */
-///////////////////////////
-
-#include <time.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <chrono>
-
 using namespace std;
+chrono::time_point<std::chrono::system_clock> start;
+
+void timeStart(){
+	start = std::chrono::system_clock::now();
+}
+
+double timeEnd(){
+	chrono::time_point<std::chrono::system_clock> end;
+	end = chrono::system_clock::now();
+   	chrono::duration<double> elapsed_seconds = end-start;
+  	return elapsed_seconds.count();
+}
+
 
 class Node{
 	
@@ -199,25 +203,100 @@ class List{
 			}
 			return NULL ;
 		}
+		
+		void clear(){
+			setSize(0);
+			setHead(NULL);
+			setTail(NULL);
+		}
 };
 
 class Interface{
 	
 	private:
-		int amountOfNodes[5] = {1000, 2000, 5000, 10000, 20000};
+	
+		int amountOfElements[5] = {1000, 2000, 5000, 10000, 20000};
 		int amountOfTests = 100;
+		int elementCounter = 0;
+		List list;
 	public:
+		
 		Interface(){
-			
+			srand(time(NULL));
 		}
 		
 		void measurements(){
-			cout << "Pomiary" << endl;
-			
+			cout << "Measuring... Please hold." << endl;
+			fstream file; 
+			while(elementCounter <= 4){
+			cout << "Stage: " << elementCounter + 1 << endl;
+				for(int i = 0; i < amountOfTests; i++){
+					file.open("/home/jacek/projekt/list/listPushFront", ios::out|ios::app);
+					timeStart();
+					for(int i = 0; i <= amountOfElements[elementCounter]; i++){
+						list.pushForward(rand());
+					}
+					file << amountOfElements[elementCounter] << "		" << timeEnd() << endl;
+ 					file.close();
+ 					
+					file.open("/home/jacek/projekt/list/listPopFront", ios::out|ios::app);
+					timeStart();
+					for(int i = 0; i <= amountOfElements[elementCounter]; i++){
+						list.popForward();
+					}
+					file << amountOfElements[elementCounter] << "		" << timeEnd() << endl;
+ 					file.close();
+					
+					file.open("/home/jacek/projekt/list/listPushBack", ios::out|ios::app);
+					timeStart();
+					for(int i = 0; i <= amountOfElements[elementCounter]; i++){
+						list.pushBack(rand());
+					}
+					file << amountOfElements[elementCounter] << "		" << timeEnd() << endl;
+ 					file.close();
+					
+					file.open("/home/jacek/projekt/list/listPopBack", ios::out|ios::app);
+					timeStart();
+					for(int i = 0; i <= amountOfElements[elementCounter]; i++){
+						list.popBack();
+					}
+					file << amountOfElements[elementCounter] << "		" << timeEnd() << endl;
+ 					file.close();
+ 					
+ 					file.open("/home/jacek/projekt/list/listInsert", ios::out|ios::app);
+					timeStart();
+					for(int i = 0; i <= amountOfElements[elementCounter]; i++){
+						list.insert(rand(), rand() % amountOfElements[elementCounter]);
+					}
+					file << amountOfElements[elementCounter] << "		" << timeEnd() << endl;
+ 					file.close();
+ 					
+ 					file.open("/home/jacek/projekt/list/listSearch", ios::out|ios::app);
+					timeStart();
+					for(int i = 0; i <= amountOfElements[elementCounter]; i++){
+						list.search(rand());
+					}
+					file << amountOfElements[elementCounter] << "		" << timeEnd() << endl;
+ 					file.close();
+ 					
+ 					
+ 					file.open("/home/jacek/projekt/list/listPopRandom", ios::out|ios::app);
+					timeStart();
+					for(int i = 0; i <= amountOfElements[elementCounter]; i++){
+						list.remove(rand() % amountOfElements[elementCounter]);
+					}
+					file << amountOfElements[elementCounter] << "		" << timeEnd() << endl;
+ 					file.close();
+ 					
+ 					list.clear();
+				}
+			elementCounter++;
+			}
 		}
 };
 
 int main(){
-
+	Interface interface;
+	interface.measurements();
 	return 0;	
 }
